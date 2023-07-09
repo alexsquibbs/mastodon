@@ -155,7 +155,7 @@ Metrics/AbcSize:
 # Configuration parameters: CountBlocks, Max.
 Metrics/BlockNesting:
   Exclude:
-    - 'lib/tasks/mastodon.rake'
+    - 'lib/tasks/unshakld.rake'
 
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Metrics/CyclomaticComplexity:
@@ -209,7 +209,7 @@ Performance/UnfreezeString:
     - 'app/lib/rss/builder.rb'
     - 'app/lib/text_formatter.rb'
     - 'app/validators/status_length_validator.rb'
-    - 'lib/tasks/mastodon.rake'
+    - 'lib/tasks/unshakld.rake'
 
 RSpec/AnyInstance:
   Exclude:
@@ -524,7 +524,7 @@ Rails/HasManyOrHasOneDependent:
 
 Rails/I18nLocaleTexts:
   Exclude:
-    - 'lib/tasks/mastodon.rake'
+    - 'lib/tasks/unshakld.rake'
     - 'spec/helpers/flashes_helper_spec.rb'
 
 # Configuration parameters: Include.
@@ -565,7 +565,7 @@ Rails/RakeEnvironment:
     - 'lib/tasks/auto_annotate_models.rake'
     - 'lib/tasks/db.rake'
     - 'lib/tasks/emojis.rake'
-    - 'lib/tasks/mastodon.rake'
+    - 'lib/tasks/unshakld.rake'
     - 'lib/tasks/repo.rake'
     - 'lib/tasks/statistics.rake'
 

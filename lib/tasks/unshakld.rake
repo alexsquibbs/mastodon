@@ -3,7 +3,7 @@
 require 'tty-prompt'
 
 namespace :mastodon do
-  desc 'Configure the instance for production use'
+  desc 'configure the instance for production use'
   task :setup do
     prompt = TTY::Prompt.new
     env    = {}
@@ -20,14 +20,15 @@ namespace :mastodon do
       prompt.say('Your instance is identified by its domain name. Changing it afterward will break things.')
       env['LOCAL_DOMAIN'] = prompt.ask('Domain name:') do |q|
         q.required true
+        q.default 'unshakld.com'
         q.modify :strip
         q.validate(/\A[a-z0-9.-]+\z/i)
-        q.messages[:valid?] = 'Invalid domain. If you intend to use unicode characters, enter punycode here'
+        q.messages[:valid?] = 'invalid domain. if you intend to use unicode characters, enter punycode here'
       end
 
       prompt.say "\n"
 
-      prompt.say('Single user mode disables registrations and redirects the landing page to your public profile.')
+      prompt.say('single user mode disables registrations and redirects the landing page to your public profile.')
       env['SINGLE_USER_MODE'] = prompt.yes?('Do you want to enable single user mode?', default: false)
 
       %w(SECRET_KEY_BASE OTP_SECRET).each do |key|
@@ -41,7 +42,7 @@ namespace :mastodon do
 
       prompt.say "\n"
 
-      using_docker        = prompt.yes?('Are you using Docker to run Mastodon?')
+      using_docker        = prompt.yes?('are you using Docker to run unshakld?', default: false)
       db_connection_works = false
 
       prompt.say "\n"
@@ -61,13 +62,13 @@ namespace :mastodon do
 
         env['DB_NAME'] = prompt.ask('Name of PostgreSQL database:') do |q|
           q.required true
-          q.default using_docker ? 'postgres' : 'mastodon_production'
+          q.default using_docker ? 'postgres' : 'unshakld_production'
           q.modify :strip
         end
 
         env['DB_USER'] = prompt.ask('Name of PostgreSQL user:') do |q|
           q.required true
-          q.default using_docker ? 'postgres' : 'mastodon'
+          q.default using_docker ? 'postgres' : 'unshakld'
           q.modify :strip
         end
 
@@ -336,15 +337,15 @@ namespace :mastodon do
 
       loop do
         if prompt.yes?('Do you want to send e-mails from localhost?', default: false)
-          env['SMTP_SERVER'] = 'localhost'
-          env['SMTP_PORT'] = 25
-          env['SMTP_AUTH_METHOD'] = 'none'
+          env['SMTP_SERVER'] = 'smtp.sendgrid.net'
+          env['SMTP_PORT'] = 587
+          env['SMTP_AUTH_METHOD'] = 'plain'
           env['SMTP_OPENSSL_VERIFY_MODE'] = 'none'
           env['SMTP_ENABLE_STARTTLS'] = 'auto'
         else
           env['SMTP_SERVER'] = prompt.ask('SMTP server:') do |q|
             q.required true
-            q.default 'smtp.mailgun.org'
+            q.default 'smtp.sendgrid.net'
             q.modify :strip
           end
 
@@ -375,7 +376,7 @@ namespace :mastodon do
 
         env['SMTP_FROM_ADDRESS'] = prompt.ask('E-mail address to send e-mails "from":') do |q|
           q.required true
-          q.default "Mastodon <notifications@#{env['LOCAL_DOMAIN']}>"
+          q.default "unshakld <system@unshakld.com}>"
           q.modify :strip
         end
 
@@ -414,7 +415,7 @@ namespace :mastodon do
             from: env['SMTP_FROM_ADDRESS'],
           }
 
-          mail = ActionMailer::Base.new.mail to: send_to, subject: 'Test', body: 'Mastodon SMTP configuration works!'
+          mail = ActionMailer::Base.new.mail to: send_to, subject: 'Test', body: 'unshakld smtp configuration works!'
           mail.deliver
           break
         rescue => e
@@ -448,50 +449,50 @@ namespace :mastodon do
         Rails.root.join('.env.production').write("#{generated_header}#{env_contents}\n")
 
         if using_docker
-          prompt.ok 'Below is your configuration, save it to an .env.production file outside Docker:'
+          prompt.ok 'below is your configuration, save it to an .env.production file outside docker:'
           prompt.say "\n"
           prompt.say "#{generated_header}#{env.each_pair.map { |key, value| "#{key}=#{value}" }.join("\n")}"
           prompt.say "\n"
-          prompt.ok 'It is also saved within this container so you can proceed with this wizard.'
+          prompt.ok 'it is also saved within this container so you can proceed with this wizard.'
         end
 
         prompt.say "\n"
-        prompt.say 'Now that configuration is saved, the database schema must be loaded.'
-        prompt.warn 'If the database already exists, this will erase its contents.'
+        prompt.say 'now that configuration is saved, the database schema must be loaded.'
+        prompt.warn 'if the database already exists, this will erase its contents.'
 
         if prompt.yes?('Prepare the database now?')
-          prompt.say 'Running `RAILS_ENV=production rails db:setup` ...'
+          prompt.say 'running `RAILS_ENV=production rails db:setup` ...'
           prompt.say "\n\n"
 
           if system(env.transform_values(&:to_s).merge({ 'RAILS_ENV' => 'production', 'SAFETY_ASSURED' => '1' }), 'rails db:setup')
             prompt.ok 'Done!'
           else
-            prompt.error 'That failed! Perhaps your configuration is not right'
+            prompt.error 'that failed! perhaps your configuration is not right'
           end
         end
 
         unless using_docker
           prompt.say "\n"
-          prompt.say 'The final step is compiling CSS/JS assets.'
-          prompt.say 'This may take a while and consume a lot of RAM.'
+          prompt.say 'the final step is compiling css/js assets.'
+          prompt.say 'this may take a while and consume a lot of ram.'
 
-          if prompt.yes?('Compile the assets now?')
-            prompt.say 'Running `RAILS_ENV=production rails assets:precompile` ...'
+          if prompt.yes?('compile the assets now?')
+            prompt.say 'running `RAILS_ENV=production rails assets:precompile` ...'
             prompt.say "\n\n"
 
             if system(env.transform_values(&:to_s).merge({ 'RAILS_ENV' => 'production' }), 'rails assets:precompile')
-              prompt.say 'Done!'
+              prompt.say 'done!'
             else
-              prompt.error 'That failed! Maybe you need swap space?'
+              prompt.error 'that failed! maybe you need swap space?'
             end
           end
         end
 
         prompt.say "\n"
-        prompt.ok 'All done! You can now power on the Mastodon server 🐘'
+        prompt.ok 'awesomeness, the server is ready to be started up now!'
         prompt.say "\n"
 
-        if db_connection_works && prompt.yes?('Do you want to create an admin user straight away?')
+        if db_connection_works && prompt.yes?('do you want to create an admin user straight away?')
           env.each_pair do |key, value|
             ENV[key] = value.to_s
           end
@@ -499,14 +500,14 @@ namespace :mastodon do
           require_relative '../../config/environment'
           disable_log_stdout!
 
-          username = prompt.ask('Username:') do |q|
+          username = prompt.ask('username:') do |q|
             q.required true
-            q.default 'admin'
+            q.default 'unshakld'
             q.validate(/\A[a-z0-9_]+\z/i)
             q.modify :strip
           end
 
-          email = prompt.ask('E-mail:') do |q|
+          email = prompt.ask('email address:') do |q|
             q.required true
             q.modify :strip
           end

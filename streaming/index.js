@@ -89,19 +89,19 @@ const parseJSON = (json, req) => {
 const pgConfigFromEnv = (env) => {
   const pgConfigs = {
     development: {
-      user:     env.DB_USER || pg.defaults.user,
+      user: env.DB_USER || pg.defaults.user,
       password: env.DB_PASS || pg.defaults.password,
-      database: env.DB_NAME || 'mastodon_development',
-      host:     env.DB_HOST || pg.defaults.host,
-      port:     env.DB_PORT || pg.defaults.port,
+      database: env.DB_NAME || 'unshakld_development',
+      host: env.DB_HOST || pg.defaults.host,
+      port: env.DB_PORT || pg.defaults.port,
     },
 
     production: {
-      user:     env.DB_USER || 'mastodon',
+      user: env.DB_USER || 'unshakld',
       password: env.DB_PASS || '',
-      database: env.DB_NAME || 'mastodon_production',
-      host:     env.DB_HOST || 'localhost',
-      port:     env.DB_PORT || 5432,
+      database: env.DB_NAME || 'unshakld_production',
+      host: env.DB_HOST || 'localhost',
+      port: env.DB_PORT || 5432,
     },
   };
 
@@ -113,17 +113,17 @@ const pgConfigFromEnv = (env) => {
     baseConfig = pgConfigs[environment];
 
     if (env.DB_SSLMODE) {
-      switch(env.DB_SSLMODE) {
-      case 'disable':
-      case '':
-        baseConfig.ssl = false;
-        break;
-      case 'no-verify':
-        baseConfig.ssl = { rejectUnauthorized: false };
-        break;
-      default:
-        baseConfig.ssl = {};
-        break;
+      switch (env.DB_SSLMODE) {
+        case 'disable':
+        case '':
+          baseConfig.ssl = false;
+          break;
+        case 'no-verify':
+          baseConfig.ssl = { rejectUnauthorized: false };
+          break;
+        default:
+          baseConfig.ssl = {};
+          break;
       }
     }
   }
@@ -367,8 +367,8 @@ const startServer = async () => {
    */
   const accountFromRequest = (req) => new Promise((resolve, reject) => {
     const authorization = req.headers.authorization;
-    const location      = url.parse(req.url, true);
-    const accessToken   = location.query.access_token || req.headers['sec-websocket-protocol'];
+    const location = url.parse(req.url, true);
+    const accessToken = location.query.access_token || req.headers['sec-websocket-protocol'];
 
     if (!authorization && !accessToken) {
       const err = new Error('Missing access token');
@@ -392,26 +392,26 @@ const startServer = async () => {
     const onlyMedia = isTruthy(query.only_media);
 
     switch (path) {
-    case '/api/v1/streaming/user':
-      return 'user';
-    case '/api/v1/streaming/user/notification':
-      return 'user:notification';
-    case '/api/v1/streaming/public':
-      return onlyMedia ? 'public:media' : 'public';
-    case '/api/v1/streaming/public/local':
-      return onlyMedia ? 'public:local:media' : 'public:local';
-    case '/api/v1/streaming/public/remote':
-      return onlyMedia ? 'public:remote:media' : 'public:remote';
-    case '/api/v1/streaming/hashtag':
-      return 'hashtag';
-    case '/api/v1/streaming/hashtag/local':
-      return 'hashtag:local';
-    case '/api/v1/streaming/direct':
-      return 'direct';
-    case '/api/v1/streaming/list':
-      return 'list';
-    default:
-      return undefined;
+      case '/api/v1/streaming/user':
+        return 'user';
+      case '/api/v1/streaming/user/notification':
+        return 'user:notification';
+      case '/api/v1/streaming/public':
+        return onlyMedia ? 'public:media' : 'public';
+      case '/api/v1/streaming/public/local':
+        return onlyMedia ? 'public:local:media' : 'public:local';
+      case '/api/v1/streaming/public/remote':
+        return onlyMedia ? 'public:remote:media' : 'public:remote';
+      case '/api/v1/streaming/hashtag':
+        return 'hashtag';
+      case '/api/v1/streaming/hashtag/local':
+        return 'hashtag:local';
+      case '/api/v1/streaming/direct':
+        return 'direct';
+      case '/api/v1/streaming/list':
+        return 'list';
+      default:
+        return undefined;
     }
   };
 
@@ -919,7 +919,7 @@ const startServer = async () => {
    * See app/lib/ascii_folder.rb for the canon definitions
    * of these constants
    */
-  const NON_ASCII_CHARS        = 'ÀÁÂÃÄÅàáâãäåĀāĂăĄąÇçĆćĈĉĊċČčÐðĎďĐđÈÉÊËèéêëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħÌÍÎÏìíîïĨĩĪīĬĭĮįİıĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓÔÕÖØòóôõöøŌōŎŏŐőŔŕŖŗŘřŚśŜŝŞşŠšſŢţŤťŦŧÙÚÛÜùúûüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽž';
+  const NON_ASCII_CHARS = 'ÀÁÂÃÄÅàáâãäåĀāĂăĄąÇçĆćĈĉĊċČčÐðĎďĐđÈÉÊËèéêëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħÌÍÎÏìíîïĨĩĪīĬĭĮįİıĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓÔÕÖØòóôõöøŌōŎŏŐőŔŕŖŗŘřŚśŜŝŞşŠšſŢţŤťŦŧÙÚÛÜùúûüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽž';
   const EQUIVALENT_ASCII_CHARS = 'AAAAAAaaaaaaAaAaAaCcCcCcCcCcDdDdDdEEEEeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOooooooOoOoOoRrRrRrSsSsSsSssTtTtTtUUUUuuuuUuUuUuUuUuUuWwYyyYyYZzZzZz';
 
   /**
@@ -951,104 +951,104 @@ const startServer = async () => {
    */
   const channelNameToIds = (req, name, params) => new Promise((resolve, reject) => {
     switch (name) {
-    case 'user':
-      resolve({
-        channelIds: channelsForUserStream(req),
-        options: { needsFiltering: false },
-      });
-
-      break;
-    case 'user:notification':
-      resolve({
-        channelIds: [`timeline:${req.accountId}:notifications`],
-        options: { needsFiltering: false },
-      });
-
-      break;
-    case 'public':
-      resolve({
-        channelIds: ['timeline:public'],
-        options: { needsFiltering: true },
-      });
-
-      break;
-    case 'public:local':
-      resolve({
-        channelIds: ['timeline:public:local'],
-        options: { needsFiltering: true },
-      });
-
-      break;
-    case 'public:remote':
-      resolve({
-        channelIds: ['timeline:public:remote'],
-        options: { needsFiltering: true },
-      });
-
-      break;
-    case 'public:media':
-      resolve({
-        channelIds: ['timeline:public:media'],
-        options: { needsFiltering: true },
-      });
-
-      break;
-    case 'public:local:media':
-      resolve({
-        channelIds: ['timeline:public:local:media'],
-        options: { needsFiltering: true },
-      });
-
-      break;
-    case 'public:remote:media':
-      resolve({
-        channelIds: ['timeline:public:remote:media'],
-        options: { needsFiltering: true },
-      });
-
-      break;
-    case 'direct':
-      resolve({
-        channelIds: [`timeline:direct:${req.accountId}`],
-        options: { needsFiltering: false },
-      });
-
-      break;
-    case 'hashtag':
-      if (!params.tag || params.tag.length === 0) {
-        reject('No tag for stream provided');
-      } else {
+      case 'user':
         resolve({
-          channelIds: [`timeline:hashtag:${normalizeHashtag(params.tag)}`],
-          options: { needsFiltering: true },
-        });
-      }
-
-      break;
-    case 'hashtag:local':
-      if (!params.tag || params.tag.length === 0) {
-        reject('No tag for stream provided');
-      } else {
-        resolve({
-          channelIds: [`timeline:hashtag:${normalizeHashtag(params.tag)}:local`],
-          options: { needsFiltering: true },
-        });
-      }
-
-      break;
-    case 'list':
-      authorizeListAccess(params.list, req).then(() => {
-        resolve({
-          channelIds: [`timeline:list:${params.list}`],
+          channelIds: channelsForUserStream(req),
           options: { needsFiltering: false },
         });
-      }).catch(() => {
-        reject('Not authorized to stream this list');
-      });
 
-      break;
-    default:
-      reject('Unknown stream type');
+        break;
+      case 'user:notification':
+        resolve({
+          channelIds: [`timeline:${req.accountId}:notifications`],
+          options: { needsFiltering: false },
+        });
+
+        break;
+      case 'public':
+        resolve({
+          channelIds: ['timeline:public'],
+          options: { needsFiltering: true },
+        });
+
+        break;
+      case 'public:local':
+        resolve({
+          channelIds: ['timeline:public:local'],
+          options: { needsFiltering: true },
+        });
+
+        break;
+      case 'public:remote':
+        resolve({
+          channelIds: ['timeline:public:remote'],
+          options: { needsFiltering: true },
+        });
+
+        break;
+      case 'public:media':
+        resolve({
+          channelIds: ['timeline:public:media'],
+          options: { needsFiltering: true },
+        });
+
+        break;
+      case 'public:local:media':
+        resolve({
+          channelIds: ['timeline:public:local:media'],
+          options: { needsFiltering: true },
+        });
+
+        break;
+      case 'public:remote:media':
+        resolve({
+          channelIds: ['timeline:public:remote:media'],
+          options: { needsFiltering: true },
+        });
+
+        break;
+      case 'direct':
+        resolve({
+          channelIds: [`timeline:direct:${req.accountId}`],
+          options: { needsFiltering: false },
+        });
+
+        break;
+      case 'hashtag':
+        if (!params.tag || params.tag.length === 0) {
+          reject('No tag for stream provided');
+        } else {
+          resolve({
+            channelIds: [`timeline:hashtag:${normalizeHashtag(params.tag)}`],
+            options: { needsFiltering: true },
+          });
+        }
+
+        break;
+      case 'hashtag:local':
+        if (!params.tag || params.tag.length === 0) {
+          reject('No tag for stream provided');
+        } else {
+          resolve({
+            channelIds: [`timeline:hashtag:${normalizeHashtag(params.tag)}:local`],
+            options: { needsFiltering: true },
+          });
+        }
+
+        break;
+      case 'list':
+        authorizeListAccess(params.list, req).then(() => {
+          resolve({
+            channelIds: [`timeline:list:${params.list}`],
+            options: { needsFiltering: false },
+          });
+        }).catch(() => {
+          reject('Not authorized to stream this list');
+        });
+
+        break;
+      default:
+        reject('Unknown stream type');
     }
   });
 
