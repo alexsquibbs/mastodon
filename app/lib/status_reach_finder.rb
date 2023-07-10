@@ -58,7 +58,7 @@ class StatusReachFinder
     @status.reblogs.rewhere(deleted_at: [nil, @status.deleted_at]).pluck(:account_id) if distributable? || unsafe?
   end
 
-  # Beware: Favourites can be created without the author having had access to the status
+  # Beware: Favorites can be created without the author having had access to the status
   def favourites_account_ids
     @status.favourites.pluck(:account_id) if distributable? || unsafe?
   end
