@@ -2,7 +2,7 @@
 
 require 'tty-prompt'
 
-namespace :mastodon do
+namespace :unshakld do
   desc 'configure the instance for production use'
   task :setup do
     prompt = TTY::Prompt.new
@@ -376,13 +376,16 @@ namespace :mastodon do
 
         env['SMTP_FROM_ADDRESS'] = prompt.ask('E-mail address to send e-mails "from":') do |q|
           q.required true
-          q.default "unshakld <system@unshakld.com}>"
+          q.default "unshakld <system@unshakld.com>"
           q.modify :strip
         end
 
-        break unless prompt.yes?('Send a test e-mail with this configuration right now?')
+        break unless prompt.yes?('send a test e-mail with this configuration right now?')
 
-        send_to = prompt.ask('Send test e-mail to:', required: true)
+        send_to = prompt.ask('send test e-mail to:') do |q|
+          q.required true
+          q.default 'contact@unshakld.com'
+          q.modify :strip
 
         begin
           enable_starttls = nil
@@ -415,13 +418,13 @@ namespace :mastodon do
             from: env['SMTP_FROM_ADDRESS'],
           }
 
-          mail = ActionMailer::Base.new.mail to: send_to, subject: 'Test', body: 'unshakld smtp configuration works!'
+          mail = ActionMailer::Base.new.mail to: send_to, subject: 'test @ unshakld', body: 'unshakld smtp configuration works!'
           mail.deliver
           break
         rescue => e
-          prompt.error 'E-mail could not be sent with this configuration, try again.'
+          prompt.error 'email could not be sent with this configuration, try again.'
           prompt.error e.message
-          break unless prompt.yes?('Try again?')
+          break unless prompt.yes?('try again?')
         end
       end
 
@@ -509,6 +512,7 @@ namespace :mastodon do
 
           email = prompt.ask('email address:') do |q|
             q.required true
+            q.default 'contact@unshakld.com'
             q.modify :strip
           end
 
