@@ -1690,9 +1690,9 @@ en:
   tags:
     does_not_match_previous_name: does not match the previous name
   themes:
-    contrast: Mastodon (High contrast)
-    default: Mastodon (Dark)
-    mastodon-light: Mastodon (Light)
+    dark: dark
+    high-contrast: high contrast
+    light: light
   time:
     formats:
       default: "%b %d, %Y, %H:%M"

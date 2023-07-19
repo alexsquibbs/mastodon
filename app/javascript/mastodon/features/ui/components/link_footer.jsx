@@ -80,25 +80,25 @@ class LinkFooter extends PureComponent {
           {canProfileDirectory && (
             <>
               {DividingCircle}
-              <Link to='/directory'><FormattedMessage id='footer.directory' defaultMessage='Profiles directory' /></Link>
+              <Link to='/directory'><FormattedMessage id='footer.directory' defaultMessage='profiles directory' /></Link>
             </>
           )}
           {DividingCircle}
-          <Link to='/privacy-policy'><FormattedMessage id='footer.privacy_policy' defaultMessage='Privacy policy' /></Link>
+          <Link to='/privacy-policy'><FormattedMessage id='footer.privacy_policy' defaultMessage='privacy policy' /></Link>
         </p>
 
         <p>
           <strong>Mastodon</strong>:
           {' '}
-          <a href='https://joinmastodon.org' target='_blank'><FormattedMessage id='footer.about' defaultMessage='About' /></a>
+          <a href='https://joinmastodon.org' target='_blank'><FormattedMessage id='footer.about' defaultMessage='about' /></a>
           {DividingCircle}
-          <a href='https://joinmastodon.org/apps' target='_blank'><FormattedMessage id='footer.get_app' defaultMessage='Get the app' /></a>
+          <a href='https://joinmastodon.org/apps' target='_blank'><FormattedMessage id='footer.get_app' defaultMessage='get the app' /></a>
           {DividingCircle}
-          <Link to='/keyboard-shortcuts'><FormattedMessage id='footer.keyboard_shortcuts' defaultMessage='Keyboard shortcuts' /></Link>
+          <Link to='/keyboard-shortcuts'><FormattedMessage id='footer.keyboard_shortcuts' defaultMessage='keyboard shortcuts' /></Link>
           {DividingCircle}
-          <a href={source_url} rel='noopener noreferrer' target='_blank'><FormattedMessage id='footer.source_code' defaultMessage='View source code' /></a>
+          <a href={source_url} rel='noopener noreferrer' target='_blank'><FormattedMessage id='footer.source_code' defaultMessage='view source code' /></a>
           {DividingCircle}
-          v{version}
+          {version}
         </p>
       </div>
     );
